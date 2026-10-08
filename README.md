@@ -59,7 +59,7 @@ Los recursos se pueden crear con Postman (ver la sección siguiente). Además, a
 
 ### Configuración y pruebas con Postman
 
-La colección lista para importar está en [`RabbitMQ_Lab.postman_collection.json`](postman/RabbitMQ_Lab.postman_collection.json). En Postman: **Import** → seleccionar el archivo. Ya incluye la autenticación Basic Auth y las 7 requests.
+La colección lista para importar está en [`RabbitMQ_Lab.postman_collection.json`](RabbitMQ_Lab.postman_collection.json). En Postman: **Import** → seleccionar el archivo. Ya incluye la autenticación Basic Auth y las 7 requests.
 
 Postman usa la API HTTP del plugin de administración de RabbitMQ (puerto 15672) para crear los recursos y probar el flujo sin escribir código.
 
