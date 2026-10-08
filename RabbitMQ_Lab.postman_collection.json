@@ -1,0 +1,266 @@
+{
+  "info": {
+    "name": "RabbitMQ Lab",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "guest",
+        "type": "string"
+      },
+      {
+        "key": "password",
+        "value": "guest",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1 - Create exchange",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:15672/api/exchanges/%2F/microservices.events",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "15672",
+          "path": [
+            "api",
+            "exchanges",
+            "%2F",
+            "microservices.events"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"direct\",\n  \"durable\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "2 - Create queue",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:15672/api/queues/%2F/payment.created.queue",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "15672",
+          "path": [
+            "api",
+            "queues",
+            "%2F",
+            "payment.created.queue"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"durable\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "3 - Bind queue to exchange",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:15672/api/bindings/%2F/e/microservices.events/q/payment.created.queue",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "15672",
+          "path": [
+            "api",
+            "bindings",
+            "%2F",
+            "e",
+            "microservices.events",
+            "q",
+            "payment.created.queue"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"routing_key\": \"payment.created\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "4 - Publish a message",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:15672/api/exchanges/%2F/microservices.events/publish",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "15672",
+          "path": [
+            "api",
+            "exchanges",
+            "%2F",
+            "microservices.events",
+            "publish"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"properties\": {},\n  \"routing_key\": \"payment.created\",\n  \"payload\": \"{\\\"eventType\\\": \\\"PaymentCreated\\\", \\\"paymentId\\\": \\\"PAY-001\\\", \\\"amount\\\": 150000, \\\"status\\\": \\\"APPROVED\\\"}\",\n  \"payload_encoding\": \"string\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "5 - Consume and remove one message",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:15672/api/queues/%2F/payment.created.queue/get",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "15672",
+          "path": [
+            "api",
+            "queues",
+            "%2F",
+            "payment.created.queue",
+            "get"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"count\": 1,\n  \"ackmode\": \"ack_requeue_false\",\n  \"encoding\": \"auto\",\n  \"truncate\": 50000\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "6 - Consume without removing",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:15672/api/queues/%2F/payment.created.queue/get",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "15672",
+          "path": [
+            "api",
+            "queues",
+            "%2F",
+            "payment.created.queue",
+            "get"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"count\": 1,\n  \"ackmode\": \"ack_requeue_true\",\n  \"encoding\": \"auto\",\n  \"truncate\": 50000\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "7 - Purge queue",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:15672/api/queues/%2F/payment.created.queue/contents",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "15672",
+          "path": [
+            "api",
+            "queues",
+            "%2F",
+            "payment.created.queue",
+            "contents"
+          ]
+        }
+      }
+    }
+  ]
+}
